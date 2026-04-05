@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
 
+
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # 🔥 CONNECT MONGODB
 client = MongoClient("mongodb+srv://NamanAdmin:%40namanD0102@cluster0.h3cucro.mongodb.net/?appName=Cluster0")
@@ -27,17 +28,25 @@ def signup():
 # LOGIN
 @app.route('/login', methods=['POST'])
 def login():
-    data = request.json
+    try:
+        data = request.json
 
-    user = users.find_one({
-        "username": data["username"],
-        "password": data["password"]
-    })
+        if not data:
+            return jsonify({"status": "fail", "message": "No data"}), 400
 
-    if user:
-        return jsonify({"status": "success"})
-    return jsonify({"status": "fail"})
+        user = users.find_one({
+            "username": data.get("username"),
+            "password": data.get("password")
+        })
 
+        if user:
+            return jsonify({"status": "success"})
+        else:
+            return jsonify({"status": "fail"})
+
+    except Exception as e:
+        print("ERROR:", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
 # ADD TO CART (DB)
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
