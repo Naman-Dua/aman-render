@@ -67,5 +67,9 @@ def get_cart():
 
     return jsonify(result)
 
+@app.route('/')
+def home():
+    return "Backend is running ✅"
+
 if __name__ == "__main__":
     app.run()
