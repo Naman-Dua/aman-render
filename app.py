@@ -17,7 +17,6 @@ cart = db["cart"]
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.json
-
     users.insert_one({
         "username": data["username"],
         "password": data["password"]
